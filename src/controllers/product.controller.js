@@ -4,10 +4,10 @@ const Category = require("../models/category.model");
 // CREATE PRODUCT
 const createProduct = async (req, res) => {
   try {
-    const { category } = req.body;
+    const { category, subCategory } = req.body;
 
     const categoryExist = await Category.findById(category);
-    if (!categoryExist)
+    if (!categoryExist || !subCategory)
       return res.status(400).json({ message: "Invalid category" });
 
     const product = await Product.create(req.body);

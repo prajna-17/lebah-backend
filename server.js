@@ -51,6 +51,8 @@ const productRoutes = require("./src/routes/product.routes");
 const categoryRoutes = require("./src/routes/category.routes");
 const orderRoutes = require("./src/routes/order.routes");
 // const paymentRoutes = require("./src/routes/payment.routes");
+const superCategoryRoutes = require("./src/routes/superCategory.routes");
+const subCategoryRoutes = require("./src/routes/subCategory.routes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -58,6 +60,8 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 // app.use("/api/payment", paymentRoutes);
+app.use("/api/super-categories", superCategoryRoutes);
+app.use("/api/sub-categories", subCategoryRoutes);
 
 // start server
 const PORT = process.env.PORT || 5000;

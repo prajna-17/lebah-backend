@@ -12,8 +12,13 @@ const categorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    superCategory: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SuperCategory",
+      required: true,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Category", categorySchema);

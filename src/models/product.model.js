@@ -8,7 +8,7 @@ const reviewSchema = new mongoose.Schema(
     images: [String],
     videos: [String],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const productSchema = new mongoose.Schema(
@@ -41,6 +41,11 @@ const productSchema = new mongoose.Schema(
       ref: "Category",
       required: true,
     },
+    subCategory: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubCategory",
+      required: true,
+    },
 
     productSellingCategory: {
       type: String,
@@ -52,7 +57,7 @@ const productSchema = new mongoose.Schema(
     rating: { type: Number, default: 0 },
     reviews: [reviewSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Product", productSchema);

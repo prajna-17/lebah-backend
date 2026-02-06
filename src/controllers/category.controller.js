@@ -3,10 +3,10 @@ const Category = require("../models/category.model");
 // CREATE CATEGORY
 const createCategory = async (req, res) => {
   try {
-    const { name, image } = req.body;
-    if (!name || !image) {
+    const { name, image, superCategory } = req.body;
+    if (!name || !image || !superCategory) {
       return res.status(400).json({
-        message: "Name and image are required",
+        message: "All Fields are required!!",
       });
     }
 
@@ -18,6 +18,7 @@ const createCategory = async (req, res) => {
     const category = await Category.create({
       name,
       image,
+      superCategory,
     });
 
     res.status(201).json(category);
