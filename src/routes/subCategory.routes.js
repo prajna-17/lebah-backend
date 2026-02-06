@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createSubCategory,
   getSubCategories,
+  updateSubCategory,
 } = require("../controllers/subCategory.controller");
 
 const router = express.Router();
