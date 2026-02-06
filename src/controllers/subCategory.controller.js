@@ -12,4 +12,21 @@ const getSubCategories = async (req, res) => {
   res.json(data);
 };
 
-module.exports = { createSubCategory, getSubCategories };
+const updateSubCategory = async (req, res) => {
+  try {
+    const updated = await SubCategory.findByIdAndUpdate(
+      req.params.id,
+      { name: req.body.name },
+      { new: true },
+    );
+
+    if (!updated)
+      return res.status(404).json({ message: "SubCategory not found" });
+
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { createSubCategory, getSubCategories, updateSubCategory };

@@ -8,5 +8,6 @@ const router = express.Router();
 
 router.post("/", createSubCategory);
 router.get("/", getSubCategories);
+router.put("/:id", updateSubCategory);
 
 module.exports = router;
