@@ -64,7 +64,7 @@ const sendOtp = async (req, res) => {
       });
     }
 
-    user.otp = otp;
+    user.otp = await bcrypt.hash(otp, 10);
     user.otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
     await user.save();
     await sendOtpEmail(email, otp);
@@ -80,7 +80,8 @@ const sendOtp = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
   try {
-    const { email, otp, name } = req.body;
+    let { email, otp, name } = req.body;
+    email = email.toLowerCase().trim();
 
     if (!email || !otp) {
       return res.status(400).json({
@@ -98,7 +99,8 @@ const verifyOtp = async (req, res) => {
       });
     }
 
-    if (user.otp !== otp) {
+    const isOtpValid = await bcrypt.compare(otp, user.otp);
+    if (!isOtpValid) {
       return res.status(400).json({
         status: "error",
         message: "Invalid OTP",
@@ -106,6 +108,10 @@ const verifyOtp = async (req, res) => {
     }
 
     if (user.otpExpiry < Date.now()) {
+      user.otp = undefined;
+      user.otpExpiry = undefined;
+      await user.save();
+
       return res.status(400).json({
         status: "error",
         message: "OTP expired",
