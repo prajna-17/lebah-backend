@@ -1,5 +1,4 @@
 const express = require("express");
-const { requireAuth, requireAdmin } = require("../middlewares/auth.middleware");
 
 const {
   createOrder,
@@ -15,21 +14,16 @@ const {
 const router = express.Router();
 
 // CUSTOMER
-router.post("/", requireAuth, createOrder);
-router.post("/create-pending", requireAuth, createPendingOrder);
-router.post("/create-cod", requireAuth, createCODOrder);
+router.post("/", createOrder);
+router.post("/create-pending", createPendingOrder);
+router.post("/create-cod", createCODOrder);
 
-// ADMIN — MUST COME BEFORE :userId
-router.get("/", requireAuth, requireAdmin, fetchAllOrders);
-router.patch("/:orderId", requireAuth, requireAdmin, orderCompleted);
+router.patch("/cancel/:orderId", cancelOrder);
+router.get("/order-details/:orderId", fetchOrderDetails);
+router.get("/:userId", fetchUserAllOrders);
 
-// CUSTOMER
-router.patch("/cancel/:orderId", requireAuth, cancelOrder);
-router.get("/order-details/:orderId", requireAuth, fetchOrderDetails);
-
-// ⚠️ ALWAYS KEEP DYNAMIC ROUTES LAST
-router.get("/:userId", requireAuth, fetchUserAllOrders);
-
-// BOTH (logged-in)
+// ADMIN (TEMP OPEN)
+router.get("/", fetchAllOrders);
+router.patch("/:orderId", orderCompleted);
 
 module.exports = router;
