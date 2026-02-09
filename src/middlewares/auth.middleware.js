@@ -14,8 +14,8 @@ const requireAuth = (req, res, next) => {
     const token = authHeader.split(" ")[1];
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = decoded; // { userId, role }
+    console.log("JWT PAYLOAD:", decoded);
+    req.user = decoded;
 
     next();
   } catch (error) {
