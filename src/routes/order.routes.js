@@ -19,16 +19,16 @@ router.post("/", requireAuth, createOrder);
 router.post("/create-pending", requireAuth, createPendingOrder);
 router.post("/create-cod", requireAuth, createCODOrder);
 
-// ✅ specific routes
+// ADMIN — MUST COME BEFORE :userId
+router.get("/", requireAuth, requireAdmin, fetchAllOrders);
+router.patch("/:orderId", requireAuth, requireAdmin, orderCompleted);
+
+// CUSTOMER
 router.patch("/cancel/:orderId", requireAuth, cancelOrder);
 router.get("/order-details/:orderId", requireAuth, fetchOrderDetails);
 
-// ⚠️ keep this LAST
+// ⚠️ ALWAYS KEEP DYNAMIC ROUTES LAST
 router.get("/:userId", requireAuth, fetchUserAllOrders);
-
-// ADMIN
-router.get("/", requireAuth, requireAdmin, fetchAllOrders);
-router.patch("/:orderId", requireAuth, requireAdmin, orderCompleted);
 
 // BOTH (logged-in)
 
