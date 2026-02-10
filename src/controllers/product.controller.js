@@ -7,6 +7,12 @@ const createProduct = async (req, res) => {
     const { category, subCategory } = req.body;
 
     const categoryExist = await Category.findById(category);
+    if (!categoryExist || !subCategory) {
+      return res.status(400).json({ message: "Invalid category" });
+    }
+
+    req.body.superCategory = categoryExist.superCategory;
+
     if (!categoryExist || !subCategory)
       return res.status(400).json({ message: "Invalid category" });
 
@@ -22,21 +28,9 @@ const getProducts = async (req, res) => {
   try {
     const { category, superCategory } = req.query;
 
-    let filter = {};
-
-    // Direct category filter
-    if (category) {
-      filter.category = category;
-    }
-
-    // 🔥 SUPER CATEGORY FILTER (CORRECT WAY)
-    if (superCategory) {
-      const categories = await Category.find({ superCategory }, "_id");
-
-      const categoryIds = categories.map((c) => c._id);
-
-      filter.category = { $in: categoryIds };
-    }
+    const filter = {};
+    if (category) filter.category = category;
+    if (superCategory) filter.superCategory = superCategory;
 
     const products = await Product.find(filter).populate("category");
     res.json(products);
