@@ -10,7 +10,7 @@ const {
   orderCompleted,
   cancelOrder,
 } = require("../controllers/order.controller");
-const { requireAuth } = require("../middleware/requireAuth");
+const { requireAuth } = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
