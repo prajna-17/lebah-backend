@@ -31,7 +31,14 @@ const createCategory = async (req, res) => {
 // GET ALL CATEGORIES
 const getCategories = async (req, res) => {
   try {
-    const categories = await Category.find();
+    const { superCategory } = req.query;
+
+    const filter = {};
+    if (superCategory) {
+      filter.superCategory = superCategory;
+    }
+
+    const categories = await Category.find(filter);
     res.json({ data: categories });
   } catch (error) {
     res.status(500).json({ message: error.message });

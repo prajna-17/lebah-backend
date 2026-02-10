@@ -22,11 +22,20 @@ const getProducts = async (req, res) => {
   try {
     console.log("🔥 FILTER CATEGORY:", req.query.category);
 
-    const { category } = req.query;
+    const { category, superCategory } = req.query;
 
-    const filter = category ? { category } : {};
+    const filter = {};
+
+    if (category) {
+      filter.category = category;
+    }
+
+    if (superCategory) {
+      filter.superCategory = superCategory;
+    }
 
     const products = await Product.find(filter).populate("category");
+
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
