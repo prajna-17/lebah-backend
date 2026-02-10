@@ -24,21 +24,21 @@ const getProducts = async (req, res) => {
 
     let filter = {};
 
-    // If category is directly provided
+    // Direct category filter
     if (category) {
       filter.category = category;
     }
 
-    let products = await Product.find(filter).populate({
-      path: "category",
-      match: superCategory ? { superCategory } : {},
-    });
-
-    // IMPORTANT: remove products whose category didn't match superCategory
+    // 🔥 SUPER CATEGORY FILTER (CORRECT WAY)
     if (superCategory) {
-      products = products.filter((p) => p.category !== null);
+      const categories = await Category.find({ superCategory }, "_id");
+
+      const categoryIds = categories.map((c) => c._id);
+
+      filter.category = { $in: categoryIds };
     }
 
+    const products = await Product.find(filter).populate("category");
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
