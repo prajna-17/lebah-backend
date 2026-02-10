@@ -62,7 +62,7 @@ const createOrder = async (req, res) => {
 
     const savedOrder = await Order.findById(newOrder._id).populate(
       "products.product",
-      "title images"
+      "title images",
     );
 
     res
@@ -80,7 +80,7 @@ const createPendingOrder = async (req, res) => {
 
   try {
     const { products, shippingAddress } = req.body;
-    const customerId = req.user.userId;
+    const customerId = req.user.id;
 
     if (!products || products.length === 0) {
       return res.status(400).json({
@@ -136,8 +136,8 @@ const createPendingOrder = async (req, res) => {
           amount: totalAmount,
           merchantTransactionId,
         },
-        "Pending order created"
-      )
+        "Pending order created",
+      ),
     );
   } catch (error) {
     res.status(500).json(ErrorResponse(500, error.message));
@@ -211,7 +211,7 @@ const orderCompleted = async (req, res) => {
         orderStatus: orderStatus || "DELIVERED",
         isCompleted: orderStatus === "DELIVERED",
       },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedOrder) {
@@ -230,7 +230,7 @@ const orderCompleted = async (req, res) => {
 const createCODOrder = async (req, res) => {
   try {
     const { products, shippingAddress } = req.body;
-    const customerId = req.user.userId;
+    const customerId = req.user.id;
 
     if (!products || products.length === 0) {
       return res
@@ -290,7 +290,7 @@ const createCODOrder = async (req, res) => {
 const cancelOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     const order = await Order.findOne({
       _id: orderId,
