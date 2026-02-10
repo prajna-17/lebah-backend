@@ -60,10 +60,7 @@ const createOrder = async (req, res) => {
 
     await newOrder.save();
 
-    const savedOrder = await Order.findById(newOrder._id).populate(
-      "products.product",
-      "title images",
-    );
+    const savedOrder = await Order.findById(newOrder._id);
 
     res
       .status(201)
@@ -167,9 +164,9 @@ const fetchUserAllOrders = async (req, res) => {
       return res.status(400).json(ErrorResponse(400, "User is not valid"));
     }
 
-    const allOrders = await Order.find({ user: userId })
-      .sort({ createdAt: -1 })
-      .populate("products.product", "title images");
+    const allOrders = await Order.find({ user: userId }).sort({
+      createdAt: -1,
+    });
 
     return res
       .status(200)
