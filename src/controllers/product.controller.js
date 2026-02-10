@@ -20,21 +20,24 @@ const createProduct = async (req, res) => {
 // GET ALL PRODUCTS
 const getProducts = async (req, res) => {
   try {
-    console.log("🔥 FILTER CATEGORY:", req.query.category);
-
     const { category, superCategory } = req.query;
 
-    const filter = {};
+    let filter = {};
 
+    // If category is directly provided
     if (category) {
       filter.category = category;
     }
 
-    if (superCategory) {
-      filter.superCategory = superCategory;
-    }
+    let products = await Product.find(filter).populate({
+      path: "category",
+      match: superCategory ? { superCategory } : {},
+    });
 
-    const products = await Product.find(filter).populate("category");
+    // IMPORTANT: remove products whose category didn't match superCategory
+    if (superCategory) {
+      products = products.filter((p) => p.category !== null);
+    }
 
     res.json(products);
   } catch (error) {
