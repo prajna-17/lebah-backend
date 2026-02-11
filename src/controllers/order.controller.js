@@ -77,7 +77,7 @@ const createPendingOrder = async (req, res) => {
 
   try {
     const { products, shippingAddress } = req.body;
-    const customerId = req.user.id;
+    const customerId = req.user.userId;
 
     if (!products || products.length === 0) {
       return res.status(400).json({
@@ -227,7 +227,7 @@ const orderCompleted = async (req, res) => {
 const createCODOrder = async (req, res) => {
   try {
     const { products, shippingAddress } = req.body;
-    const customerId = req.user.id;
+    const customerId = req.user.userId;
 
     if (!products || products.length === 0) {
       return res
@@ -288,7 +288,7 @@ const createCODOrder = async (req, res) => {
 const cancelOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const order = await Order.findOne({
       _id: orderId,
