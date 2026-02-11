@@ -260,6 +260,7 @@ const createCODOrder = async (req, res) => {
         subtotal,
       });
     }
+    console.log("ORDER SAVED FOR USER:", customerId);
 
     const newOrder = new Order({
       user: customerId,
