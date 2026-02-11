@@ -6,7 +6,7 @@ const sendOtpEmail = async (email, otp) => {
   await resend.emails.send({
     from: `Lebah <${process.env.EMAIL_FROM}>`,
     to: email,
-    subject: "Your Lebah OTP",
+    subject: "Your Montoaklyn OTP",
     html: `
       <div style="font-family: Arial, sans-serif;">
         <h2>Your OTP</h2>
