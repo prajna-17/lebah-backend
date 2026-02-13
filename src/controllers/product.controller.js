@@ -26,13 +26,20 @@ const createProduct = async (req, res) => {
 // GET ALL PRODUCTS
 const getProducts = async (req, res) => {
   try {
-    const { category, superCategory } = req.query;
+    const { category, superCategory, subCategory, search } = req.query;
 
     const filter = {};
+
     if (category) filter.category = category;
     if (superCategory) filter.superCategory = superCategory;
+    if (subCategory) filter.subCategory = subCategory;
+
+    if (search) {
+      filter.title = { $regex: search, $options: "i" };
+    }
 
     const products = await Product.find(filter).populate("category");
+
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
