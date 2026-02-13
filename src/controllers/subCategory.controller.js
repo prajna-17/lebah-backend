@@ -1,8 +1,30 @@
 const SubCategory = require("../models/subCategory.model");
 
 const createSubCategory = async (req, res) => {
-  const sub = await SubCategory.create(req.body);
-  res.status(201).json(sub);
+  try {
+    const { name, category } = req.body;
+
+    // Check if same name already exists in the same category
+    const existing = await SubCategory.findOne({
+      name: name.trim().toLowerCase(),
+      category,
+    });
+
+    if (existing) {
+      return res.status(400).json({
+        message: "SubCategory already exists in this category",
+      });
+    }
+
+    const sub = await SubCategory.create({
+      name: name.trim().toLowerCase(),
+      category,
+    });
+
+    res.status(201).json(sub);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const getSubCategories = async (req, res) => {
