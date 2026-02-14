@@ -1,4 +1,5 @@
 const SubCategory = require("../models/subCategory.model");
+const Product = require("../models/product.model");
 
 const createSubCategory = async (req, res) => {
   try {
@@ -50,5 +51,29 @@ const updateSubCategory = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+const deleteSubCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-module.exports = { createSubCategory, getSubCategories, updateSubCategory };
+    // 1️⃣ Delete products belonging to this subcategory
+    await Product.deleteMany({ subCategory: id });
+
+    // 2️⃣ Delete subcategory
+    const deleted = await SubCategory.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "SubCategory not found" });
+    }
+
+    res.json({ message: "SubCategory and related products deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  createSubCategory,
+  getSubCategories,
+  updateSubCategory,
+  deleteSubCategory,
+};
