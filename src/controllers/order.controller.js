@@ -2,6 +2,7 @@ const Order = require("../models/order.model");
 const Product = require("../models/product.model");
 const User = require("../models/user.model");
 const { createResponse, ErrorResponse } = require("../utils/responseWrapper");
+const calculateComboDiscount = require("../utils/comboCalculator");
 
 // CREATE ORDER
 const createOrder = async (req, res) => {
@@ -255,7 +256,6 @@ const createCODOrder = async (req, res) => {
     }
 
     let orderItems = [];
-    let totalAmount = 0;
 
     for (const item of products) {
       const dbProduct = await Product.findById(item.product);
@@ -267,7 +267,6 @@ const createCODOrder = async (req, res) => {
       }
 
       const subtotal = dbProduct.price * item.quantity;
-      totalAmount += subtotal;
 
       orderItems.push({
         product: dbProduct._id,
@@ -279,13 +278,19 @@ const createCODOrder = async (req, res) => {
         subtotal,
       });
     }
-    console.log("ORDER SAVED FOR USER:", customerId);
+
+    // Fetch product details for combo calculation
+    const productDetails = await Product.find({
+      _id: { $in: products.map((p) => p.product) },
+    });
+
+    const { finalTotal } = calculateComboDiscount(products, productDetails);
 
     const newOrder = new Order({
       user: customerId,
       products: orderItems,
       shippingAddress,
-      totalAmount,
+      totalAmount: finalTotal,
       paymentMethod: "COD",
       paymentStatus: "PENDING",
       orderStatus: "PLACED",
