@@ -56,6 +56,12 @@ const createOrder = async (req, res) => {
       products: orderItems,
       shippingAddress,
       totalAmount,
+      statusTimeline: [
+        {
+          status: "PLACED",
+          date: new Date(),
+        },
+      ],
     });
 
     await newOrder.save();
@@ -121,6 +127,12 @@ const createPendingOrder = async (req, res) => {
       paymentStatus: "PENDING",
       isCompleted: false,
       merchantTransactionId,
+      statusTimeline: [
+        {
+          status: "PLACED",
+          date: new Date(),
+        },
+      ],
     });
 
     await newOrder.save();
@@ -267,11 +279,16 @@ const createCODOrder = async (req, res) => {
       products: orderItems,
       shippingAddress,
       totalAmount,
-
       paymentMethod: "COD",
       paymentStatus: "PENDING",
       orderStatus: "PLACED",
       isCompleted: false,
+      statusTimeline: [
+        {
+          status: "PLACED",
+          date: new Date(),
+        },
+      ],
     });
 
     await newOrder.save();
