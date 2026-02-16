@@ -333,6 +333,10 @@ const cancelOrder = async (req, res) => {
     if (order.paymentMethod === "ONLINE") {
       order.paymentStatus = "FAILED";
     }
+    order.statusTimeline.push({
+      status: "CANCELLED",
+      date: new Date(),
+    });
 
     await order.save();
 
