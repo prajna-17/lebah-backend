@@ -20,7 +20,7 @@ const calculateComboDiscount = (items, productDetails) => {
   else if (totalQty >= 4) discountPercentage = 15;
 
   const discountAmount = (subTotal * discountPercentage) / 100;
-  const finalTotal = subTotal - discountAmount;
+  const finalTotal = Math.round(subTotal - discountAmount);
 
   return {
     subTotal,
