@@ -214,22 +214,29 @@ const orderCompleted = async (req, res) => {
     const { orderId } = req.params;
     const { orderStatus } = req.body;
 
-    const updatedOrder = await Order.findByIdAndUpdate(
-      orderId,
-      {
-        orderStatus: orderStatus || "DELIVERED",
-        isCompleted: orderStatus === "DELIVERED",
-      },
-      { new: true },
-    );
+    const order = await Order.findById(orderId);
 
-    if (!updatedOrder) {
+    if (!order) {
       return res.status(400).json(ErrorResponse(400, "Order not valid"));
     }
 
+    const newStatus = orderStatus || "DELIVERED";
+
+    // Update main status
+    order.orderStatus = newStatus;
+    order.isCompleted = newStatus === "DELIVERED";
+
+    // Push into timeline
+    order.statusTimeline.push({
+      status: newStatus,
+      date: new Date(),
+    });
+
+    await order.save();
+
     return res
       .status(200)
-      .json(createResponse(200, updatedOrder, "Order status updated"));
+      .json(createResponse(200, order, "Order status updated"));
   } catch (error) {
     res.status(500).json(ErrorResponse(500, error.message));
   }
