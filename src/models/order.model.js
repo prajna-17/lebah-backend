@@ -16,7 +16,7 @@ const orderProductSchema = new mongoose.Schema(
     },
     subtotal: Number,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const shippingSchema = new mongoose.Schema(
@@ -47,7 +47,7 @@ const shippingSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const orderSchema = new mongoose.Schema(
@@ -97,8 +97,20 @@ const orderSchema = new mongoose.Schema(
       enum: ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"],
       default: "PLACED",
     },
+    statusTimeline: [
+      {
+        status: {
+          type: String,
+          enum: ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"],
+        },
+        date: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Order", orderSchema);
