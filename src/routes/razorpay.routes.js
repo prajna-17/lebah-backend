@@ -59,6 +59,7 @@ router.post("/verify-payment", async (req, res) => {
 
     // 🔥 NEW: Fetch payment details from Razorpay
     const payment = await razorpay.payments.fetch(razorpay_payment_id);
+    console.log("🔥 Payment status from Razorpay:", payment.status);
 
     if (payment.status !== "captured") {
       return res.status(400).json({
