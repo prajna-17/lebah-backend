@@ -57,6 +57,16 @@ router.post("/verify-payment", async (req, res) => {
       });
     }
 
+    // 🔥 NEW: Fetch payment details from Razorpay
+    const payment = await razorpay.payments.fetch(razorpay_payment_id);
+
+    if (payment.status !== "captured") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment not completed",
+      });
+    }
+
     const Order = require("../models/order.model");
 
     const order = await Order.findById(orderId);
