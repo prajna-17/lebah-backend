@@ -97,6 +97,10 @@ const orderSchema = new mongoose.Schema(
       enum: ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"],
       default: "PLACED",
     },
+    isNotified: {
+      type: Boolean,
+      default: false,
+    },
     statusTimeline: [
       {
         status: {

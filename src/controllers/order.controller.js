@@ -353,6 +353,42 @@ const cancelOrder = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+// FETCH UNREAD ORDERS (ADMIN NOTIFICATIONS)
+const fetchUnreadOrders = async (req, res) => {
+  try {
+    const unreadOrders = await Order.find({ isNotified: false }).sort({
+      createdAt: -1,
+    });
+
+    return res
+      .status(200)
+      .json(createResponse(200, unreadOrders, "Unread orders fetched"));
+  } catch (error) {
+    return res.status(500).json(ErrorResponse(500, error.message));
+  }
+};
+
+// MARK ORDER AS NOTIFIED
+const markOrderAsNotified = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json(ErrorResponse(404, "Order not found"));
+    }
+
+    order.isNotified = true;
+    await order.save();
+
+    return res
+      .status(200)
+      .json(createResponse(200, order, "Order marked as notified"));
+  } catch (error) {
+    return res.status(500).json(ErrorResponse(500, error.message));
+  }
+};
 
 module.exports = {
   createOrder,
@@ -363,4 +399,6 @@ module.exports = {
   orderCompleted,
   createCODOrder,
   cancelOrder,
+  fetchUnreadOrders,
+  markOrderAsNotified,
 };
