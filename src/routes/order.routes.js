@@ -11,6 +11,7 @@ const {
   cancelOrder,
   fetchAllNotifications,
   markOrderAsNotified,
+  generateInvoice,
 } = require("../controllers/order.controller");
 
 const { requireAuth } = require("../middlewares/auth.middleware");
@@ -28,6 +29,7 @@ router.get("/order-details/:orderId", fetchOrderDetails);
 // ================= ADMIN ROUTES =================
 router.get("/notifications", fetchAllNotifications);
 router.patch("/mark-notified/:orderId", markOrderAsNotified);
+router.get("/invoice/:orderId", generateInvoice);
 
 router.get("/", fetchAllOrders);
 router.patch("/:orderId", orderCompleted);

@@ -391,6 +391,70 @@ const markOrderAsNotified = async (req, res) => {
   }
 };
 
+const PDFDocument = require("pdfkit");
+
+// GENERATE INVOICE PDF (ADMIN)
+const generateInvoice = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json(ErrorResponse(404, "Order not found"));
+    }
+
+    const doc = new PDFDocument({ margin: 40 });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=invoice-${order._id}.pdf`,
+    );
+
+    doc.pipe(res);
+
+    // Title
+    doc.fontSize(20).text("Invoice", { align: "center" });
+    doc.moveDown();
+
+    // Order Info
+    doc.fontSize(12).text(`Order ID: ${order._id}`);
+    doc.text(`Order Date: ${new Date(order.createdAt).toLocaleString()}`);
+    doc.text(`Payment Method: ${order.paymentMethod}`);
+    doc.text(`Payment Status: ${order.paymentStatus}`);
+    doc.moveDown();
+
+    // Shipping
+    doc.text("Shipping Address:");
+    doc.text(order.shippingAddress.fullName);
+    doc.text(order.shippingAddress.phone);
+    doc.text(order.shippingAddress.addressLine);
+    doc.text(`${order.shippingAddress.city}, ${order.shippingAddress.state}`);
+    doc.text(order.shippingAddress.postalCode);
+    doc.moveDown();
+
+    // Products Table
+    doc.text("Products:");
+    doc.moveDown(0.5);
+
+    order.products.forEach((p, index) => {
+      doc.text(
+        `${index + 1}. ${p.title} | Qty: ${p.quantity} | ₹${p.subtotal}`,
+      );
+    });
+
+    doc.moveDown();
+    doc.fontSize(14).text(`Total Amount: ₹${order.totalAmount}`, {
+      align: "right",
+    });
+
+    doc.end();
+  } catch (error) {
+    return res.status(500).json(ErrorResponse(500, error.message));
+  }
+};
+
 module.exports = {
   createOrder,
   createPendingOrder,
@@ -402,4 +466,5 @@ module.exports = {
   cancelOrder,
   fetchAllNotifications,
   markOrderAsNotified,
+  generateInvoice,
 };
