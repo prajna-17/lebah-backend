@@ -354,15 +354,16 @@ const cancelOrder = async (req, res) => {
   }
 };
 // FETCH UNREAD ORDERS (ADMIN NOTIFICATIONS)
-const fetchUnreadOrders = async (req, res) => {
+// FETCH ALL ORDERS FOR NOTIFICATIONS (READ + UNREAD)
+const fetchAllNotifications = async (req, res) => {
   try {
-    const unreadOrders = await Order.find({ isNotified: false }).sort({
+    const orders = await Order.find({}).sort({
       createdAt: -1,
     });
 
     return res
       .status(200)
-      .json(createResponse(200, unreadOrders, "Unread orders fetched"));
+      .json(createResponse(200, orders, "Notifications fetched"));
   } catch (error) {
     return res.status(500).json(ErrorResponse(500, error.message));
   }
@@ -399,6 +400,6 @@ module.exports = {
   orderCompleted,
   createCODOrder,
   cancelOrder,
-  fetchUnreadOrders,
+  fetchAllNotifications,
   markOrderAsNotified,
 };

@@ -9,7 +9,7 @@ const {
   fetchUserAllOrders,
   orderCompleted,
   cancelOrder,
-  fetchUnreadOrders,
+  fetchAllNotifications,
   markOrderAsNotified,
 } = require("../controllers/order.controller");
 
@@ -26,7 +26,7 @@ router.patch("/cancel/:orderId", requireAuth, cancelOrder);
 router.get("/order-details/:orderId", fetchOrderDetails);
 
 // ================= ADMIN ROUTES =================
-router.get("/unread", fetchUnreadOrders);
+router.get("/notifications", fetchAllNotifications);
 router.patch("/mark-notified/:orderId", markOrderAsNotified);
 
 router.get("/", fetchAllOrders);
